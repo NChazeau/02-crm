@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% form_theme form _self %}
+
+{% block body %}
+<h1>Créer un nouveau Sancho</h1>
+    {{ form_start(form) }}
+      {{ form_widget(form) }}
+      <button class="btn btn-success">Enregistrer</button>
+      {{ form_end(form) }}
+  
+{% endblock %}
+
+
+{% block form_row %}
+  <div class="form-group" style="background-color:red">
+  {{form_label(form)}}
+  {{form_errors(form)}}
+  {{form_widget(form)}}
+</div>
+  {% endblock %}
+
+  
+
+  

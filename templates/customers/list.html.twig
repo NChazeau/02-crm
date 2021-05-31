@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+{% block title %}TEMA LA LISTE{% endblock %}
+{% block body %}
+<a href="{{ path('customers_create') }}" class="btn btn-primary btn-sm">Créer un candidat</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for c in customers %}
+            <tr>
+                <td>{{ c.fullName }}</td>
+                <td>{{ c.email }}</td>
+                <td>
+                    <a href="{{ path('customers_edit', {'id': c.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                    <a href="{{ path('customers_delete', {'id': c.id}) }}" class="btn btn-danger btn-sm ml-1">Supprimer</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
