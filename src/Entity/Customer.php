@@ -43,6 +43,13 @@ class Customer {
 
     public string $email;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
+     */
+
+     public $user;
+
     public function getFullName(): string
     {
         return "$this->firstName $this->lastName";

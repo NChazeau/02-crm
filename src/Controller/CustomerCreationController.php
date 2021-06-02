@@ -7,6 +7,7 @@ use App\Form\CustomerType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -16,8 +17,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class CustomerCreationController extends AbstractController
@@ -25,24 +29,33 @@ class CustomerCreationController extends AbstractController
     private $em;
     private $validator;
     private $formFactory;
+    private $security;
 
     public function __construct(
         EntityManagerInterface $em,
         ValidatorInterface $validatorInterface,
-        FormFactoryInterface $formFactoryInterface
+        FormFactoryInterface $formFactoryInterface,
+        Security $security
     ) {
         $this->em = $em;
-        $this->validator = $validatorInterface;
-        $this->formFactory = $formFactoryInterface;
+        //$this->validator = $validatorInterface;
+        //$this->formFactory = $formFactoryInterface;
+        //$this->security = $security;
     }
 
     /**
      * @Route("/customers/create", name="customers_create")
+     * @IsGranted("CAN_CREATE_CUSTOMER")
      * @return Response 
      */
     public function displayForm(Request $request, FlashBagInterface $flashbag): Response
     {
         
+        /*if(!$this->isGranted('CAN_CREATE_CUSTOMER')){
+            throw new AccessDeniedException();
+        }*/
+
+
         $form = $this->createForm(CustomerType::class);
 
         $form->handleRequest($request);

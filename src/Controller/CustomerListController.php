@@ -2,34 +2,60 @@
 
 namespace App\Controller;
 
+use Twig\Environment;
 use App\Repository\CustomerRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Twig\Environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class CustomerListController extends AbstractController
 {
 
     private $repository;
     //private $twig;
+    private $security;
 
-    public function __construct(CustomerRepository $customerRepository 
+    public function __construct(CustomerRepository $customerRepository, Security $security 
     //Environment $twig
     )
     {
         $this->repository = $customerRepository;
         //$this->twig = $twig;
+        //$this->security = $security;
     }
 
 
 /**
- * @Route("/clients", name="customers_list")
+ * @Route("/customers", name="customers_list")
+ * @IsGranted("CAN_LIST_CUSTOMERS")
  */
 
  public function list(): Response
  {
-    $customers = $this->repository->findAll();
+    
+    
+/*
+    if(!$this->isGranted('CAN_LIST_CUSTOMERS')){
+        throw new AccessDeniedException();
+    }
+    */
+    /*
+    if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_MODERATOR')) {
+            $customers = $this->repository->findAll();
+        } else {
+            $customers = $this->repository->findBy(['user' => $this->getUser()]);
+        }
+    */
+
+    if ($this->isGranted('CAN_LIST_ALL_CUSTOMERS')) {
+        $customers = $this->repository->findAll();
+    } else {
+        $customers = $this->repository->findBy(['user' => $this->getUser()]);
+    }
+
 
 
     return $this->render("customers/list.html.twig", ['customers' => $customers]);

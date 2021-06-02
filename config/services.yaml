@@ -41,3 +41,28 @@ services:
             - "%pdo.user%"
             - "%pdo.password%"
 
+    App\Listener\ResponseHeaderListener:
+        tags:
+            - { 
+                name: 'kernel.event_listener', 
+                event: "kernel.response",
+                method: "addHeaderToResponse",
+                }
+
+    App\Doctrine\UserPasswordListener:
+        tags:
+            - {
+                name: "doctrine.orm.entity_listener",
+                event: prePersist,
+                entity: App\Entity\User,
+            }
+
+    App\Doctrine\CustomerUserListener:
+        tags:
+            - {
+                name: doctrine.orm.entity_listener,
+                event: prePersist,
+                entity: App\Entity\Customer,
+            }
+
+

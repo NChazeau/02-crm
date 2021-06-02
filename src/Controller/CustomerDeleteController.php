@@ -2,34 +2,50 @@
 
 namespace  App\Controller;
 
+use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class CustomerDeleteController extends AbstractController
 {
 
 
     public function __construct(
-        CustomerRepository $customerRepository,
+        //CustomerRepository $customerRepository,
         EntityManagerInterface $em 
        )
         {
-    $this->repository = $customerRepository;
+   // $this->repository = $customerRepository;
     $this->em = $em;
 
     }
     
     /**
      * @Route("/customers/{id}/delete", name="customers_delete")
+     * @IsGranted("CAN_REMOVE", subject="customer")
      */
     
-    public function delete(Request $request){
+    public function delete(Customer $customer){
+
+        /*if(!$this->isGranted('CAN_REMOVE', $customer)){
+            throw new AccessDeniedException();
+        }
+        */
+        /*
+        if($customer->user !== $this->getUser()) {
+            throw new NotFoundHttpException();
+        }
+        */
+        
+        /*
         //on a besoin de l'id ( j'ai besoin de la request)
         $id = $request->attributes->get('id');
 
@@ -39,7 +55,8 @@ class CustomerDeleteController extends AbstractController
         if(!$customer){
             throw new NotFoundHttpException("Le client n°$id n'existe pas.");
         }
-        
+        */
+
         // On le suprime ( j'a ibesoin de l'eEntityManager)
         $this->em->remove($customer);
         $this->em->flush();
