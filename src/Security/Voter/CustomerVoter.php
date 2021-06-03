@@ -18,45 +18,55 @@ class CustomerVoter extends Voter
             return false;
         }
 
-        $policies = ['CAN_REMOVE', 'CAN_EDIT', 'CAN_LIST_CUSTOMERS', 'CAN_CREATE_CUSTOMER', 'CAN_LIST_ALL_CUSTOMERS'];
+        $policies = [
+            'CAN_REMOVE',
+            'CAN_EDIT',
+            'CAN_LIST_CUSTOMERS',
+            'CAN_LIST_ALL_CUSTOMERS',
+            'CAN_CREATE_CUSTOMER'
+        ];
 
-        if(in_array($attribute, $policies) === false) {
-            return false;
-        }
-
-        return true;
+        return in_array($attribute, $policies);
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-        
 
-        //si tu n'es pas connecté, t'as le droit à rien tu dégages !
         if (!$user instanceof UserInterface) {
             return false;
         }
 
-        //si tue s admin, je te return true
-        if(in_array("ROLE_ADMIN", $user->getRoles())){
+        if (in_array('ROLE_ADMIN',  $user->getRoles())){
             return true;
         }
 
-        if($attribute === 'CAN_CREATE_CUSTOMER'){
-            return !in_array('ROLE_MODERATOR', $user->getRoles());
+        if ($attribute === 'CAN_LIST_ALL_CUSTOMERS') {
+            return in_array('ROLE_MODERATOR', $user->getRoles());
         }
 
-        if($attribute === 'CAN_LIST_ALL_CUSTOMERS'){
-            return in_array('ROLE_MODERATOR', $user->getRoles());
+        if ($attribute === 'CAN_CREATE_CUSTOMER') {
+            return !in_array('ROLE_MODERATOR', $user->getRoles());
         }
 
         if ($attribute === 'CAN_EDIT') {
             return $subject->user === $user;
         }
 
-        if($attribute === 'CAN_REMOVE'){
+        if ($attribute === 'CAN_REMOVE') {
             return in_array('ROLE_MODERATOR', $user->getRoles()) || $subject->user === $user;
         }
+
+        return true;
+    }
+
+
+
+}
+
+
+
+
 
 
         //si tu es connecté, et que tu veux modifier/supprimer un customer
@@ -66,9 +76,4 @@ class CustomerVoter extends Voter
             return false;
         }
             */
-        //tu as le droit
-        return true;
-        
-    }
-    
-}
+  
